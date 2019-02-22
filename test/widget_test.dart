@@ -5,26 +5,19 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:nure_schedule/main.dart';
+import 'package:nure_schedule/api/cist_api_client.dart';
+import 'package:nure_schedule/api/model/event_list.dart';
+import 'package:nure_schedule/api/model/group.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(MyApp());
-
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  test('Test API parser', () async {
+    Group group = Group.withId(5721659);
+    EventList eventList = await CistApiClient.getGroupEvents(
+      group: group,
+      dateStart: DateTime(2019, 01, 01),
+      dateEnd: DateTime(2019, 07, 01),
+    );
+    print(eventList);
   });
 }

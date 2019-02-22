@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:nure_schedule/api/enum/nure_pair.dart';
 import 'package:nure_schedule/api/model/event.dart';
 
-class NureDay extends StatelessWidget {
+class NureDayView extends StatelessWidget {
   final DateTime date;
   final List<Event> events;
 
-  NureDay({
+  NureDayView({
     @required this.date,
     @required this.events,
   });
