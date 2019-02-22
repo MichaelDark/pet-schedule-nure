@@ -1,96 +1,60 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:nure_schedule/widgets/day_pager_controller.dart';
 
 typedef Widget DayBuilder(DateTime day);
 
 class DayPager extends StatefulWidget {
   final DayBuilder builder;
-  final int daysPerPage;
-  final DateTime initialDay;
-  final DateTime minDate;
+  final DayPagerController pagerController;
 
   DayPager({
+    DayPagerController pagerController,
     @required this.builder,
-    this.daysPerPage = 3,
-    DateTime minDate,
-    DateTime initialDay,
-  })  : initialDay = initialDay ?? DateTime.now(),
-        minDate = minDate ?? DateTime(2018);
+  }) : pagerController = pagerController ?? DayPagerController();
 
   @override
   State<StatefulWidget> createState() => _DayPagerState();
 }
 
 class _DayPagerState extends State<DayPager> {
-  ScrollController controller = ScrollController();
-  int daysPerPage;
-  int initialDay;
+  DayPagerController get dayPagerController => widget.pagerController;
 
   @override
   void initState() {
     super.initState();
-
-    this.daysPerPage = widget.daysPerPage;
-    this.initialDay = getDaysFromMinDate(widget.initialDay);
   }
 
   @override
   void dispose() {
-    controller.dispose();
+    dayPagerController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double dayWidth = screenWidth / daysPerPage;
-    controller = ScrollController(
-      initialScrollOffset: initialDay * dayWidth,
-    );
+    dayPagerController.calculateInitialOffset(context);
 
-    return SafeArea(
-      child: buildListView(dayWidth),
-    );
+    return SafeArea(child: buildListView());
   }
 
-  Widget buildListView(double dayWidth) {
+  Widget buildListView() {
+    double dayWidth = dayPagerController.calculateDayWidth(context);
     return ListView.builder(
-      controller: controller,
+      controller: dayPagerController.scrollController,
       itemExtent: dayWidth,
       scrollDirection: Axis.horizontal,
       itemBuilder: (context, daysFromMinDate) {
         print(daysFromMinDate);
-        DateTime day = getDate(daysFromMinDate);
+        DateTime day = dayPagerController.getDate(daysFromMinDate);
 
         return SizedBox(
           width: dayWidth,
-          child: Column(
-            children: <Widget>[
-              buildDayHeader(day),
-              widget.builder(day),
-            ],
-          ),
+          child: widget.builder(day),
         );
       },
       addRepaintBoundaries: false,
       addAutomaticKeepAlives: false,
     );
   }
-
-  int getDaysFromMinDate(DateTime date) => widget.minDate.difference(date).inDays.abs();
-  DateTime getDate(int daysFromMinDate) => widget.minDate.add(Duration(days: daysFromMinDate));
-
-  Widget buildDayHeader(DateTime day) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        Text(formatWeekDay(day)),
-        Text(formatDate(day)),
-        Text(day.year.toString()),
-      ],
-    );
-  }
-
-  String formatWeekDay(DateTime date) => DateFormat('EEEE').format(date);
-  String formatDate(DateTime date) => DateFormat('MMM dd').format(date);
 }

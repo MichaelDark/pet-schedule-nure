@@ -23,15 +23,17 @@ class Event {
         {
           return Colors.greenAccent;
         }
-      case 'Лр':
+      case 'Лб':
         {
           return Colors.pinkAccent;
         }
     }
   }
 
+  String get timeRangeString => ' ${datetimeStart.hour}:${datetimeStart.minute} - ${datetimeEnd.hour}:${datetimeEnd.minute}';
+
   @override
   String toString() {
-    return '$lesson $room $type ${datetimeStart.hour}:${datetimeStart.minute} - ${datetimeEnd.hour}:${datetimeEnd.minute}';
+    return '$lesson $room $type $timeRangeString';
   }
 }

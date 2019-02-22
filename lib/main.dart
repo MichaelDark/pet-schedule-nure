@@ -1,15 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:nure_schedule/api/cist_api_client.dart';
 import 'package:nure_schedule/api/model/event_list.dart';
 import 'package:nure_schedule/api/model/group.dart';
 import 'package:nure_schedule/widgets/day_pager.dart';
+import 'package:nure_schedule/widgets/day_pager_controller.dart';
 import 'package:nure_schedule/widgets/nure_day_view.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+  void forcePortrait() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+  }
+
   @override
   Widget build(BuildContext context) {
+    forcePortrait();
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Nure Schedule',
@@ -28,6 +39,12 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   EventList eventList;
+  DateTime currentDatetime;
+  DayPagerController pagerController = DayPagerController(
+    daysPerPage: 3,
+    initialDay: DateTime.now(),
+    minDate: DateTime(2018),
+  );
 
   void load() async {
     Group group = Group.withId(5721659);
@@ -47,10 +64,20 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.calendar_today),
+        onPressed: () {
+          pagerController.jumpTo(context, DateTime.now());
+        },
+      ),
+      appBar: AppBar(
+        title: Text('Nure Schedule'),
+        centerTitle: true,
+      ),
       body: eventList == null
           ? Center(child: CircularProgressIndicator())
           : DayPager(
-              minDate: eventList.minDate,
+              pagerController: pagerController,
               builder: (DateTime day) {
                 return NureDayView(
                   date: day,
