@@ -19,6 +19,7 @@ class CistApiClient {
     urlBuilder.addDateEnd(dateEnd);
 
     http.Response response = await http.get(urlBuilder.url);
+    print(urlBuilder.url);
     String responseBody = decodeCp1251(response.bodyBytes);
 
     EventList eventList = EventList.fromCsv(group.id, responseBody);

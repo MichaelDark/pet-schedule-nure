@@ -11,6 +11,7 @@ class Event {
   String type;
   DateTime datetimeStart;
   DateTime datetimeEnd;
+  String raw;
 
   Color get color {
     switch (type) {

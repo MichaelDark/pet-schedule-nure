@@ -11,17 +11,17 @@ class NureDay extends StatelessWidget {
     @required this.events,
   });
 
-  num get heightFactor => 1 / NurePair.values.length;
-
   @override
   Widget build(BuildContext context) {
-    List<Event> eventsList = List.generate(NurePair.values.length, (int index) => null);
+    List<List<Event>> eventsList = List.generate(
+      NurePair.values.length,
+      (int index) => [],
+    );
 
     for (Event event in events) {
       NurePair pair = NurePair.getByTime(event);
       if (pair != null) {
-        eventsList.removeAt(pair.id);
-        eventsList.insert(pair.id, event);
+        eventsList[pair.id].add(event);
       }
     }
 
@@ -30,12 +30,19 @@ class NureDay extends StatelessWidget {
     );
   }
 
-  Widget _buildEvent(Event event) {
-    return Container(
-      color: event?.color ?? null,
-      child: SizedBox(
-        height: 50,
-        child: Text(event?.toString() ?? ''),
+  Widget _buildEvent(List<Event> events) {
+    return SizedBox(
+      height: 50,
+      child: ListView.builder(
+        itemCount: events.length,
+        primary: false,
+        itemBuilder: (context, index) {
+          Event event = events[index];
+          return Container(
+            color: event?.color ?? null,
+            child: Text(event?.toString() ?? ''),
+          );
+        },
       ),
     );
   }

@@ -50,14 +50,23 @@ class EventList {
         /// `11` - Описание
         /// `12` - Пометка
         List<String> eventDescription = rawEvent[0].split(' ');
-
-        Event parsedEvent = Event()
-          ..lesson = eventDescription[isManyGroups ? 2 : 0]
-          ..type = eventDescription[isManyGroups ? 3 : 1]
-          ..room = eventDescription[isManyGroups ? 4 : 2]
-          ..datetimeStart = parseDate(rawEvent[1], rawEvent[2])
-          ..datetimeEnd = parseDate(rawEvent[3], rawEvent[4]);
-        eventList.events.add(parsedEvent);
+        // print(rawEvent[0]);
+        // print(rawEvent[0].split(' '));
+        // print(rawEvent[0].split(';'));
+        // print('\r\n');
+        List<String> events = rawEvent[0].split(';');
+        for (String event in events) {
+          if (event.contains(RegExp(r'[.*\sЛк.\s*][.*\sПз.\s*][.*\sЛб.\s*]'))) {
+            Event parsedEvent = Event()
+              ..raw = rawEvent[0]
+              ..lesson = eventDescription[isManyGroups ? 2 : 0]
+              ..type = eventDescription[isManyGroups ? 3 : 1]
+              ..room = eventDescription[isManyGroups ? 4 : 2]
+              ..datetimeStart = parseDate(rawEvent[1], rawEvent[2])
+              ..datetimeEnd = parseDate(rawEvent[3], rawEvent[4]);
+            eventList.events.add(parsedEvent);
+          }
+        }
       } catch (exception) {
         print(exception);
       }

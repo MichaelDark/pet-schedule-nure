@@ -22,16 +22,16 @@ class DayPager extends StatefulWidget {
 }
 
 class _DayPagerState extends State<DayPager> {
-  ScrollController controller;
+  ScrollController controller = ScrollController();
   int daysPerPage;
-  int initialPage;
+  int initialDay;
 
   @override
   void initState() {
     super.initState();
 
     this.daysPerPage = widget.daysPerPage;
-    this.initialPage = getDaysFromMinDate(widget.initialDay);
+    this.initialDay = getDaysFromMinDate(widget.initialDay);
   }
 
   @override
@@ -44,35 +44,36 @@ class _DayPagerState extends State<DayPager> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double dayWidth = screenWidth / daysPerPage;
-
-    if (controller == null) {
-      double initialScrollOffset = (initialPage * dayWidth).toDouble();
-      this.controller = ScrollController(
-        initialScrollOffset: initialScrollOffset,
-      );
-    }
+    controller = ScrollController(
+      initialScrollOffset: initialDay * dayWidth,
+    );
 
     return SafeArea(
-      child: ListView.builder(
-        controller: controller,
-        scrollDirection: Axis.horizontal,
-        itemBuilder: (context, daysFromMinDate) {
-          print(daysFromMinDate);
-          DateTime day = getDate(daysFromMinDate);
+      child: buildListView(dayWidth),
+    );
+  }
 
-          return SizedBox(
-            width: dayWidth,
-            child: Column(
-              children: <Widget>[
-                buildDayHeader(day),
-                widget.builder(day),
-              ],
-            ),
-          );
-        },
-        addRepaintBoundaries: false,
-        addAutomaticKeepAlives: false,
-      ),
+  Widget buildListView(double dayWidth) {
+    return ListView.builder(
+      controller: controller,
+      itemExtent: dayWidth,
+      scrollDirection: Axis.horizontal,
+      itemBuilder: (context, daysFromMinDate) {
+        print(daysFromMinDate);
+        DateTime day = getDate(daysFromMinDate);
+
+        return SizedBox(
+          width: dayWidth,
+          child: Column(
+            children: <Widget>[
+              buildDayHeader(day),
+              widget.builder(day),
+            ],
+          ),
+        );
+      },
+      addRepaintBoundaries: false,
+      addAutomaticKeepAlives: false,
     );
   }
 

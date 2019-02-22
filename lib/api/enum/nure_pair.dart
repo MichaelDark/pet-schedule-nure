@@ -5,7 +5,7 @@ class NurePair {
   static final NurePair first = NurePair._(0, formatTime(07, 45), formatTime(09, 20));
   static final NurePair second = NurePair._(1, formatTime(09, 30), formatTime(11, 05));
   static final NurePair third = NurePair._(2, formatTime(11, 15), formatTime(12, 50));
-  static final NurePair fourth = NurePair._(3, formatTime(13, 10), formatTime(15, 45));
+  static final NurePair fourth = NurePair._(3, formatTime(13, 10), formatTime(14, 45));
   static final NurePair fifth = NurePair._(4, formatTime(15, 55), formatTime(16, 30));
   static final NurePair sixth = NurePair._(5, formatTime(16, 40), formatTime(18, 15));
   static final NurePair seventh = NurePair._(6, formatTime(18, 25), formatTime(20, 00));
