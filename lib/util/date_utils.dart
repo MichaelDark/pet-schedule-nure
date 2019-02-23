@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 DateTime parseDate(String dateString, String timeString) {
   List<String> dateList = dateString.trim().split('.');
   List<String> timeList = timeString.trim().split(':');
@@ -13,3 +15,5 @@ bool correspondsDate(DateTime date, DateTime checkableDate) {
 bool correspondsTime(DateTime date, DateTime checkableDate) {
   return date.hour == checkableDate.hour && date.minute == checkableDate.minute;
 }
+
+String timeToString(DateTime time) => DateFormat('hh:mm').format(time);

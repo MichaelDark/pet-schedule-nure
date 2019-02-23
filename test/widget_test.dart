@@ -7,7 +7,7 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nure_schedule/api/cist_api_client.dart';
-import 'package:nure_schedule/api/model/group/group.dart';
+import 'package:nure_schedule/api/model/group.dart';
 import 'package:nure_schedule/api/model/group_events.dart';
 
 void main() {
@@ -19,7 +19,7 @@ void main() {
       dateEnd: DateTime(2019, 07, 01),
     );
     print(eventList);
-    print(eventList.calculateEventsPerDay());
+    print(eventList.getNurePairsRanges());
   });
   test('Test GET groups', () async {
     List<Group> groups = await CistApiClient().getGroups();

@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
 import 'package:nure_schedule/api/enum/cist_doc_type.dart';
-import 'package:nure_schedule/api/model/group/group.dart';
+import 'package:nure_schedule/api/model/group.dart';
 import 'package:nure_schedule/api/model/tutor.dart';
 
 class CistUrlBuilder {

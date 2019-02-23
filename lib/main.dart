@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nure_schedule/pages/home.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -22,17 +23,12 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.dark,
         primarySwatch: Colors.blue,
         textTheme: TextTheme(
-          display1: TextStyle(
-            color: Color(0xffaaaaaa),
-          ),
-          body1: TextStyle(
-            color: Color(0xff333333),
-          ),
+          display1: TextStyle(color: Color(0xffaaaaaa)),
+          body1: TextStyle(color: Color(0xff333333)),
+          body2: TextStyle(fontSize: 12, color: Color(0xffaaaaaa)),
         ),
         accentTextTheme: TextTheme(
-          display1: TextStyle(
-            color: Color(0xffeeeeee),
-          ),
+          display1: TextStyle(color: Color(0xffeeeeee)),
         ),
       ),
       home: HomePage(),

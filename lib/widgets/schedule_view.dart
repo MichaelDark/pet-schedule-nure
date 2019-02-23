@@ -1,28 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:nure_schedule/widgets/day_pager_controller.dart';
+import 'package:nure_schedule/widgets/schedule_controller.dart';
 
 typedef Widget DayBuilder(DateTime day);
 
-class DayPager extends StatefulWidget {
+class ScheduleView extends StatefulWidget {
   final DayBuilder builder;
-  final DayPagerController pagerController;
+  final ScheduleController controller;
 
-  DayPager({
-    DayPagerController pagerController,
+  ScheduleView({
     @required this.builder,
-  }) : pagerController = pagerController ?? DayPagerController();
+    ScheduleController pagerController,
+  }) : controller = pagerController ?? ScheduleController();
 
   @override
-  State<StatefulWidget> createState() => _DayPagerState();
+  State<StatefulWidget> createState() => _ScheduleViewState();
 }
 
-class _DayPagerState extends State<DayPager> {
-  DayPagerController get dayPagerController => widget.pagerController;
-
-  @override
-  void initState() {
-    super.initState();
-  }
+class _ScheduleViewState extends State<ScheduleView> {
+  ScheduleController get dayPagerController => widget.controller;
 
   @override
   void dispose() {
@@ -39,6 +34,7 @@ class _DayPagerState extends State<DayPager> {
 
   Widget buildListView() {
     double dayWidth = dayPagerController.calculateDayWidth(context);
+
     return ListView.builder(
       controller: dayPagerController.scrollController,
       itemExtent: dayWidth,

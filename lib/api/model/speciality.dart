@@ -1,6 +1,6 @@
 import 'package:jaguar_serializer/jaguar_serializer.dart';
-import 'package:nure_schedule/api/model/group/group.dart';
-import 'package:nure_schedule/api/model/group/named_entity.dart';
+import 'package:nure_schedule/api/model/group.dart';
+import 'package:nure_schedule/api/model/named_entity.dart';
 part 'speciality.jser.dart';
 
 @GenSerializer()

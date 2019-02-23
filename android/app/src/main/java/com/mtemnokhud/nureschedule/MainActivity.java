@@ -1,4 +1,4 @@
-package com.example.nureschedule;
+package com.mtemnokhud.nureschedule;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;

@@ -6,7 +6,7 @@ part 'event.jser.dart';
 @GenSerializer()
 class EventSerializer extends Serializer<Event> with _$EventSerializer {}
 
-class Event extends TimeRange {
+class Event extends ITimeRange {
   String lesson;
   String room;
   String type;
@@ -26,7 +26,11 @@ class Event extends TimeRange {
         }
       case 'Лб':
         {
-          return Colors.pinkAccent;
+          return Colors.pinkAccent.shade100;
+        }
+      case 'Конс':
+        {
+          return Colors.blueGrey.shade100;
         }
     }
   }

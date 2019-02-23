@@ -1,25 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:nure_schedule/widgets/date_header.dart';
 
-class DayPagerController extends ChangeNotifier {
+class ScheduleController extends ChangeNotifier {
   final DateTime initialDay;
-  final DateTime minDate;
+  final DateTime minPossibleDate;
   ScrollController _scrollController = ScrollController();
   int _daysPerPage;
 
-  DayPagerController({
+  ScheduleController({
     DateTime initialDay,
     DateTime minDate,
     int daysPerPage,
   })  : initialDay = initialDay ?? DateTime.now(),
-        minDate = minDate ?? DateTime(2018),
+        minPossibleDate = minDate ?? DateTime(2018),
         _daysPerPage = daysPerPage != null && daysPerPage > 1 ? daysPerPage : 3;
 
   ScrollController get scrollController => _scrollController;
 
-  bool canDisplayDate(DateTime date) => date.isAfter(minDate);
+  bool canDisplayDate(DateTime date) => date.isAfter(minPossibleDate);
 
   double calculateDayWidth(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
+    double screenWidth = MediaQuery.of(context).size.width - headersSize;
     double dayWidth = screenWidth / _daysPerPage;
     return dayWidth;
   }
@@ -50,8 +51,8 @@ class DayPagerController extends ChangeNotifier {
     }
   }
 
-  int getDaysFromMinDate(DateTime date) => minDate.difference(date).inDays.abs();
-  DateTime getDate(int daysFromMinDate) => minDate.add(Duration(days: daysFromMinDate));
+  int getDaysFromMinDate(DateTime date) => minPossibleDate.difference(date).inDays.abs();
+  DateTime getDate(int daysFromMinDate) => minPossibleDate.add(Duration(days: daysFromMinDate));
 
   @override
   void dispose() {

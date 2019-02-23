@@ -1,8 +1,8 @@
 import 'package:csv/csv.dart';
 import 'package:nure_schedule/api/model/event.dart';
-import 'package:nure_schedule/api/model/group/group.dart';
+import 'package:nure_schedule/api/model/group.dart';
 import 'package:nure_schedule/api/model/group_events.dart';
-import 'package:nure_schedule/api/util/date_utils.dart';
+import 'package:nure_schedule/util/date_utils.dart';
 
 class GroupEventsParser {
   static final GroupEventsParser _instance = GroupEventsParser._();

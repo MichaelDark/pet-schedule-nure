@@ -1,7 +1,8 @@
 import 'package:jaguar_serializer/jaguar_serializer.dart';
 import 'package:nure_schedule/api/model/event.dart';
-import 'package:nure_schedule/api/model/group/group.dart';
-import 'package:nure_schedule/api/util/date_utils.dart';
+import 'package:nure_schedule/api/model/group.dart';
+import 'package:nure_schedule/model/time_range.dart';
+import 'package:nure_schedule/util/date_utils.dart';
 part 'group_events.jser.dart';
 
 @GenSerializer()
@@ -15,25 +16,17 @@ class GroupEvents {
 
   List<Event> getEvents(DateTime date) => events.where((Event event) => correspondsDate(date, event.timeStart)).toList();
 
-  int calculateEventsPerDay() {
-    Map<String, int> map = {};
+  List<ITimeRange> getNurePairsRanges() {
+    Map<int, ITimeRange> map = {};
     for (Event event in events) {
       map.putIfAbsent(
-        '${event.timeStart.hour}:${event.timeStart.minute}',
-        () => 0,
+        event.timeId,
+        () => TimeRange.copy(event),
       );
     }
-    return map.keys.length;
-  }
-
-  DateTime calculateMinDate() {
-    DateTime currentMinDate;
-    events.forEach((Event event) {
-      if (currentMinDate == null || event.timeStart.isBefore(currentMinDate)) {
-        currentMinDate = event.timeStart;
-      }
-    });
-    return currentMinDate;
+    List<TimeRange> nurePairs = map.values.toList();
+    nurePairs.sort((time1, time2) => time1.timeStart.compareTo(time2.timeStart));
+    return nurePairs;
   }
 
   @override
