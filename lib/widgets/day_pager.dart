@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:nure_schedule/widgets/day_pager_controller.dart';
 
 typedef Widget DayBuilder(DateTime day);

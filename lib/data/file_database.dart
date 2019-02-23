@@ -2,20 +2,51 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:jaguar_serializer/jaguar_serializer.dart';
+import 'package:nure_schedule/api/model/group/group.dart';
+import 'package:nure_schedule/api/model/group_events.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
 class FileDatabase {
-  Future<void> save<TObject extends Identity, TSerializer extends Serializer<TObject>>(TObject object, TSerializer serializer) async {
+  Future<void> saveGroupEvents(GroupEvents groupEvents) async {
+    try {
+      Directory documents = await _documentsDirectory;
+      String filename = 'list.json';
+
+      String folderPath = path.join(documents.path, filename);
+      File file = File(folderPath);
+      if (!await file.exists()) {
+        file = await file.create();
+      }
+      await file.writeAsString(
+        json.encode(GroupEventsSerializer().toMap(groupEvents)),
+        mode: FileMode.write,
+      );
+
+      print('save success');
+    } catch (ignored) {}
+  }
+
+  Future<GroupEvents> loadGroupEvents(Group group) async {
     Directory documents = await _documentsDirectory;
-    String folderName = "db";
-    String filename = '${object.getId()}.fdb';
+    String filename = 'list.json';
 
-    String folderPath = path.join(documents.path, folderName, filename);
+    String folderPath = path.join(documents.path, filename);
     File file = File(folderPath);
-
-    String jsonObject = json.encode(serializer.toMap(object));
-    await file.writeAsString(jsonObject);
+    try {
+      if (await file.exists()) {
+        String rawJson = await file.readAsString();
+        GroupEvents groupEvents = GroupEventsSerializer().fromMap(json.decode(rawJson));
+        if (groupEvents.group == null || groupEvents.group.id == null) {
+          return null;
+        }
+        print('load success');
+        return groupEvents;
+      }
+    } catch (exception) {
+      print(exception);
+    }
+    return null;
   }
 
   Future<TObject> load<TKey, TObject extends Identity<TKey>, TSerializer extends Serializer<TObject>>(TKey key, TSerializer serializer) async {

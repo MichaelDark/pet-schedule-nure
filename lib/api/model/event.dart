@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:jaguar_serializer/jaguar_serializer.dart';
+import 'package:nure_schedule/model/time_range.dart';
 part 'event.jser.dart';
 
 @GenSerializer()
 class EventSerializer extends Serializer<Event> with _$EventSerializer {}
 
-class Event {
+class Event extends TimeRange {
   String lesson;
   String room;
   String type;
-  DateTime datetimeStart;
-  DateTime datetimeEnd;
   String raw;
 
-  Color get color {
+  Event({DateTime timeStart, DateTime timeEnd}) : super(timeStart, timeEnd);
+
+  Color getColor() {
     switch (type) {
       case 'Лк':
         {
@@ -30,10 +31,8 @@ class Event {
     }
   }
 
-  String get timeRangeString => ' ${datetimeStart.hour}:${datetimeStart.minute} - ${datetimeEnd.hour}:${datetimeEnd.minute}';
-
   @override
   String toString() {
-    return '$lesson $room $type $timeRangeString';
+    return '$lesson $room $type ${timeStartString()} - ${timeEndString()}';
   }
 }

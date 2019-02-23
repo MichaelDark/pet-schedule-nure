@@ -7,17 +7,22 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nure_schedule/api/cist_api_client.dart';
-import 'package:nure_schedule/api/model/event_list.dart';
-import 'package:nure_schedule/api/model/group.dart';
+import 'package:nure_schedule/api/model/group/group.dart';
+import 'package:nure_schedule/api/model/group_events.dart';
 
 void main() {
   test('Test API parser', () async {
-    Group group = Group.withId(5721659);
-    EventList eventList = await CistApiClient.getGroupEvents(
+    Group group = Group(id: 5721659, name: 'ПЗПІ-16-2');
+    GroupEvents eventList = await CistApiClient().getGroupEvents(
       group: group,
       dateStart: DateTime(2019, 01, 01),
       dateEnd: DateTime(2019, 07, 01),
     );
     print(eventList);
+    print(eventList.calculateEventsPerDay());
+  });
+  test('Test GET groups', () async {
+    List<Group> groups = await CistApiClient().getGroups();
+    print(groups);
   });
 }
