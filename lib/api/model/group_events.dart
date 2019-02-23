@@ -24,7 +24,7 @@ class GroupEvents {
         () => TimeRange.copy(event),
       );
     }
-    List<TimeRange> nurePairs = map.values.toList();
+    List<ITimeRange> nurePairs = map.values.toList();
     nurePairs.sort((time1, time2) => time1.timeStart.compareTo(time2.timeStart));
     return nurePairs;
   }
