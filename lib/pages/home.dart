@@ -1,81 +1,111 @@
 import 'package:flutter/material.dart';
-import 'package:nure_schedule/api/cist_api_client.dart';
 import 'package:nure_schedule/api/model/group.dart';
-import 'package:nure_schedule/api/model/group_events.dart';
+import 'package:nure_schedule/main.dart';
+import 'package:nure_schedule/scoped_model/main_model.dart';
 import 'package:nure_schedule/widgets/group_schedule_view.dart';
 import 'package:nure_schedule/widgets/schedule_controller.dart';
-
-final Group pzpiGroup = Group(id: 5721659, name: 'ПЗПІ-16-2');
+import 'package:nure_schedule/widgets/states/data_state.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  bool isLoading = false;
-  GroupEvents _groupEvents;
-  ScheduleController pagerController = ScheduleController(
-    daysPerPage: 3,
-    initialDay: DateTime.now(),
-    minDate: DateTime(2018),
-  );
+class _HomePageState extends DataState<HomePage> with LoadDataHelper<HomePage, Group> {
+  ScheduleController pagerController;
 
-  void load({bool forceReload = false}) async {
-    setState(() {
-      isLoading = true;
-    });
-    // _groupEvents = await FileDatabase().loadGroupEvents(_group);
-    // if (forceReload) {
-    _groupEvents = await CistApiClient().getGroupEvents(
-      group: pzpiGroup,
-      dateStart: DateTime(2019, 02, 01),
-      dateEnd: DateTime(2019, 07, 01),
-    );
-    //   await FileDatabase().saveGroupEvents(_groupEvents);
-    //   print('HTTP loaded');
-    // }
-    setState(() {
-      isLoading = false;
-    });
-  }
+  @override
+  Future<Group> get dataLoader => ScopedModel.of<MainModel>(context).loadGroupEvents();
 
   @override
   Widget build(BuildContext context) {
-    if (_groupEvents == null && !isLoading) {
-      load();
-    }
+    loadData();
 
-    return Scaffold(
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.calendar_today),
-          onPressed: () {
-            pagerController.jumpTo(context, DateTime.now());
-          },
-        ),
-        appBar: AppBar(
-          title: Text(pzpiGroup?.name ?? 'Nure Schedule'),
-          centerTitle: true,
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.refresh),
-              onPressed: () {
-                if (_groupEvents != null) load(forceReload: true);
-              },
-            )
-          ],
-        ),
-        body: isLoading ? Center(child: CircularProgressIndicator()) : _buildSchedule());
-  }
+    pagerController = ScheduleController(
+      context,
+      daysPerPage: 3,
+      initialDay: DateTime.now(),
+      minDate: DateTime(2018),
+    );
 
-  Widget _buildSchedule() {
-    if (_groupEvents == null) {
-      return Center(child: Text('No schedule'));
-    }
+    return ScopedModelDescendant<MainModel>(
+      builder: (BuildContext context, _, MainModel model) {
+        return Scaffold(
+          floatingActionButton: hasLoadedData
+              ? FloatingActionButton(
+                  child: Icon(Icons.refresh),
+                  onPressed: () {
+                    pagerController.jumpTo(DateTime.now());
+                  },
+                )
+              : Container(),
+          appBar: AppBar(
+            title: Text(model.selectedGroup?.name ?? appName),
+            centerTitle: true,
+            actions: <Widget>[
+              model.hasSelectedGroup
+                  ? IconButton(
+                      icon: Icon(Icons.refresh),
+                      onPressed: () {
+                        model.refreshGroupEvents().then((_) {
+                          reloadData();
+                        });
+                      },
+                    )
+                  : Container(),
+              IconButton(
+                icon: Icon(Icons.group),
+                onPressed: () {
+                  if (!isDataLoading)
+                    Navigator.pushNamed(context, '/groups').then<Group>(
+                      (received) {
+                        if (received is Group) {
+                          model.selectedGroup = received;
+                          reloadData();
+                        }
+                      },
+                    );
+                },
+              )
+            ],
+          ),
+          body: Builder(
+            builder: (BuildContext context) {
+              if (hasLoadedData) {
+                if (!loadedData.hasEvents()) {
+                  return Center(child: Text('Update schedule', style: TextStyle(color: Colors.grey)));
+                }
+                return GroupScheduleView(
+                  group: loadedData,
+                  controller: pagerController,
+                );
+              }
+              if (isDataLoading) {
+                return Center(
+                    child: Column(
+                  children: <Widget>[
+                    Text(
+                      'Loading ...',
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                    SizedBox(height: 10),
+                    CircularProgressIndicator(),
+                  ],
+                ));
+              }
+              if (!hasLoadedData) {
+                return Center(child: Text('Select group', style: TextStyle(color: Colors.grey)));
+              }
+              if (hasError) {
+                return Center(child: Text(errorText, style: TextStyle(color: Colors.grey)));
+              }
 
-    return GroupScheduleView(
-      groupEvents: _groupEvents,
-      controller: pagerController,
+              return Center(child: CircularProgressIndicator());
+            },
+          ),
+        );
+      },
     );
   }
 }

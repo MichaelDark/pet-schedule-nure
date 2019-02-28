@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:nure_schedule/scoped_model/main_model.dart';
 import 'package:nure_schedule/util/date_utils.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 const double headersSize = 40;
 
@@ -19,12 +21,14 @@ class DateHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
     if (day == null) {
-      return Opacity(
-        opacity: 0,
-        child: SizedBox(
-          height: height,
-          width: width,
-        ),
+      return ScopedModelDescendant<MainModel>(
+        builder: (BuildContext context, _, MainModel model) {
+          return SizedBox(
+            height: height,
+            width: width,
+            // child: Icon(model.colorBrightness == Brightness.dark ? Icons.brightness_5 : Icons.brightness_3),
+          );
+        },
       );
     }
 
@@ -48,7 +52,4 @@ class DateHeader extends StatelessWidget {
       ),
     );
   }
-
-  String formatWeekDay(DateTime date) => DateFormat('EEEE').format(date);
-  String formatDate(DateTime date) => DateFormat('dd.MM.yyyy').format(date);
 }

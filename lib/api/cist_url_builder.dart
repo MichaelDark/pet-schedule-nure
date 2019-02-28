@@ -1,7 +1,6 @@
 import 'package:intl/intl.dart';
 import 'package:nure_schedule/api/enum/cist_doc_type.dart';
 import 'package:nure_schedule/api/model/group.dart';
-import 'package:nure_schedule/api/model/tutor.dart';
 
 class CistUrlBuilder {
   String _url;
@@ -41,23 +40,6 @@ class CistUrlBuilder {
 
     _addParam('Aid_group', groupsString);
     _addFlow(0); //ignore flow, parse groups
-  }
-
-  void _addDepartment(int departmentId) => _addParam('Aid_kaf', departmentId);
-  void addTutors(List<Tutor> tutors) {
-    if (tutors == null || tutors.isEmpty) return;
-    if (tutors.length == 1) {
-      _addParam('Aid_sotr', tutors.first.id);
-      _addDepartment(0); //ignore department, parse groups
-      return;
-    }
-
-    String groupsString = '${tutors.first.id}';
-    tutors.removeAt(0);
-    tutors.forEach((group) => groupsString += '_${group.id}');
-
-    _addParam('Aid_sotr', groupsString);
-    _addDepartment(0); //ignore department, parse groups
   }
 
   void addAuditory(int auditoryId) => _addParam('Aid_aud', auditoryId);
