@@ -34,7 +34,7 @@ class _HomePageState extends DataState<HomePage> with LoadDataHelper<HomePage, G
         return Scaffold(
           floatingActionButton: hasLoadedData
               ? FloatingActionButton(
-                  child: Icon(Icons.refresh),
+                  child: Icon(Icons.calendar_today),
                   onPressed: () {
                     pagerController.jumpTo(DateTime.now());
                   },
@@ -57,15 +57,7 @@ class _HomePageState extends DataState<HomePage> with LoadDataHelper<HomePage, G
               IconButton(
                 icon: Icon(Icons.group),
                 onPressed: () {
-                  if (!isDataLoading)
-                    Navigator.pushNamed(context, '/groups').then<Group>(
-                      (received) {
-                        if (received is Group) {
-                          model.selectedGroup = received;
-                          reloadData();
-                        }
-                      },
-                    );
+                  if (!isDataLoading) Navigator.pushReplacementNamed(this.context, '/groups');
                 },
               )
             ],

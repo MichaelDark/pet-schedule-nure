@@ -15,12 +15,19 @@ class _GroupsPageState extends DataState<GroupsPage> with LoadDataHelper<GroupsP
 
   @override
   Widget build(BuildContext context) {
+    print('build Groups');
     loadData();
 
     return Scaffold(
       appBar: AppBar(
         title: Text('Groups'),
         centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.home),
+          onPressed: () {
+            Navigator.pushReplacementNamed(context, '/home');
+          },
+        ),
       ),
       body: Builder(
         builder: (BuildContext context) {
@@ -29,11 +36,11 @@ class _GroupsPageState extends DataState<GroupsPage> with LoadDataHelper<GroupsP
               itemCount: loadedData.length,
               itemBuilder: (BuildContext context, int index) {
                 Group currentGroup = loadedData[index];
-                return ListTile(
-                  title: Text(currentGroup.name),
+                return GroupListTile(
+                  group: currentGroup,
                   onTap: () {
                     ScopedModel.of<MainModel>(context).selectedGroup = currentGroup;
-                    Navigator.pop<Group>(context, currentGroup);
+                    Navigator.pushReplacementNamed(context, '/home');
                   },
                 );
               },
@@ -44,6 +51,60 @@ class _GroupsPageState extends DataState<GroupsPage> with LoadDataHelper<GroupsP
           }
           return Center(child: CircularProgressIndicator());
         },
+      ),
+    );
+  }
+}
+
+class GroupListTile extends StatefulWidget {
+  final Group group;
+  final void Function() onTap;
+
+  GroupListTile({this.group, this.onTap});
+
+  @override
+  State<StatefulWidget> createState() => _GroupListTileState();
+}
+
+class _GroupListTileState extends State<GroupListTile> {
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: widget.onTap,
+      child: Padding(
+        padding: EdgeInsets.all(20),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Expanded(
+              child: Text(
+                widget.group.name,
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.grey,
+                ),
+              ),
+            ),
+            FutureBuilder(
+              future: ScopedModel.of<MainModel>(context).isGroupSaved(widget.group),
+              builder: (context, AsyncSnapshot<bool> snapshot) {
+                if (snapshot.hasData && snapshot.data) {
+                  return Text(
+                    'Saved',
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.grey,
+                    ),
+                  );
+                }
+                if (snapshot.hasError) {
+                  return Container();
+                }
+                return CircularProgressIndicator();
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

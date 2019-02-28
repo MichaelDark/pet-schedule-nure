@@ -16,14 +16,14 @@ dependencies:
   flutter:
     sdk: flutter
   path: any
-  path_provider: any
+  path_provider: ^0.4.1
   http: any
   intl: ^0.15.7
   csv: ^4.0.1
 
   calendar_views: ^0.5.2
-  jaguar_orm: any
-  jaguar_query_sqflite: ^2.2.5
+  jaguar_orm: ^2.2.4
+  jaguar_query_sqflite: ^2.2.4
   scoped_model: any
   
 
@@ -35,9 +35,12 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner: any
-  jaguar_orm_gen: any 
+  jaguar_orm_gen: ^2.2.25 
   jaguar_serializer_cli: any 
   flutter_launcher_icons: '^0.7.0'
+
+dependency_overrides:
+  jaguar_query: ^2.2.4
   
 flutter_icons:
   android: 'icon'

@@ -55,6 +55,15 @@ class MainModel extends Model {
 
   Future<void> refreshGroupEvents() async => cacheGroupEvents(selectedGroup);
 
+  Future<bool> isGroupSaved(Group group) async {
+    try {
+      Group localGroup = await _groupBean.find(group.id);
+      return localGroup != null;
+    } catch (ignored) {
+      return false;
+    }
+  }
+
   Future<void> cacheGroupEvents(Group targetGroup) async {
     print('EVENTS CACHE START');
     try {
@@ -64,7 +73,7 @@ class MainModel extends Model {
         dateEnd: DateTime(2019, 07, 01),
       );
       selectedGroup = resultGroup;
-      if (await _groupBean.find(resultGroup.id) != null) {
+      if (await isGroupSaved(resultGroup)) {
         await _groupBean.remove(targetGroup.id, true);
       }
       await _groupBean.insert(

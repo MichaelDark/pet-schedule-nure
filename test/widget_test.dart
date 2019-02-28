@@ -24,10 +24,10 @@ void main() {
   });
 
   test('Test GET all groups', () async {
-    var groups = await CistApiClient().getGroupsList();
+    // var groups = await CistApiClient().getGroupsList();
 
-    for (var group in groups) {
-      print(group.name + " - " + group.id.toString());
-    }
+    // for (var group in groups) {
+    //   print(group.name + " - " + group.id.toString());
+    // }
   });
 }
