@@ -25,4 +25,12 @@ class CistApiClient {
     Group resultGroup = GroupEventsParser().parseCsv(targetGroup, responseBody);
     return resultGroup;
   }
+
+  Future<List<Group>> getGroupsList() async {
+    http.Response response = await http.get(CistUrl.allGroups);
+
+    String responseBody = decodeCp1251(response.bodyBytes);
+
+    return ResponseExtractor.parseGroups(responseBody);
+  }
 }

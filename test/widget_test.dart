@@ -22,4 +22,12 @@ void main() {
     // List<Group> groups = await CistApiClient().getGroups();
     // print(groups);
   });
+
+  test('Test GET all groups', () async {
+    var groups = await CistApiClient().getGroupsList();
+
+    for (var group in groups) {
+      print(group.name + " - " + group.id.toString());
+    }
+  });
 }
