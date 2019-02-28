@@ -3,6 +3,7 @@ import 'package:jaguar_serializer/jaguar_serializer.dart';
 import 'package:meta/meta.dart';
 import 'package:nure_schedule/api/util/api_client_exception.dart';
 import 'package:nure_schedule/api/util/parser.dart';
+import 'package:nure_schedule/api/model/group.dart';
 
 const String textUnknownException = 'Unknown Exception';
 const String _tag = '<<<ResponseHandler>>>:';
@@ -97,5 +98,20 @@ class ResponseExtractor {
       ApiClientException exception = _parseError(response);
       return Future.error(exception);
     }
+  }
+
+  static Future<List<Group>> parseGroups(String groupsHtml) async {
+    RegExp matchingGroups = new RegExp(r"IAS_ADD_Group_in_List\(\'([А-ЯЁІЇа-яёії0-9-]+)\',(\d+)\)");
+
+    Iterable<Match> matches = matchingGroups.allMatches(groupsHtml);
+    List<Group> groups = [];
+
+    for (var match in matches) {
+      var id = int.parse(match.group(2));
+      var name = match.group(1);
+      groups.add(Group(id: id, name: name));
+    }
+
+    return groups;
   }
 }

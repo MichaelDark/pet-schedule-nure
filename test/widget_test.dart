@@ -9,6 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nure_schedule/api/cist_api_client.dart';
 import 'package:nure_schedule/api/model/group.dart';
 import 'package:nure_schedule/api/model/group_events.dart';
+import 'package:http/http.dart' as http;
 
 void main() {
   test('Test API parser', () async {
@@ -24,5 +25,13 @@ void main() {
   test('Test GET groups', () async {
     List<Group> groups = await CistApiClient().getGroups();
     print(groups);
+  });
+
+  test('Test GET all groups', () async {
+    var groups = await CistApiClient().getGroupsList();
+
+    for (var group in groups) {
+      print(group.name + " - " + group.id.toString());
+    }
   });
 }

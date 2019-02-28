@@ -27,6 +27,14 @@ class CistApiClient {
     return eventList;
   }
 
+  Future<List<Group>> getGroupsList() async {
+    http.Response response = await http.get(CistUrl.allGroups);
+
+    String responseBody = decodeCp1251(response.bodyBytes);
+
+    return ResponseExtractor.parseGroups(responseBody);
+  }
+
   Future<List<Group>> getGroups() async {
     http.Response response = await http.get(CistUrl.groups);
 
