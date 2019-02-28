@@ -8,7 +8,7 @@ class DayEvent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return events.length == 1 ? _buildEvent(event: events.first) : _buildEventList();
+    return events.length == 1 ? _buildEvent(context, event: events.first) : _buildEventList();
   }
 
   Widget _buildEventList() {
@@ -23,16 +23,19 @@ class DayEvent extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           itemBuilder: (BuildContext context, int index) {
             Event event = events[index];
-            return _buildEvent(width: itemWidth, event: event);
+            return _buildEvent(context, width: itemWidth, event: event);
           },
         );
       },
     );
   }
 
-  Widget _buildEvent({double width, Event event}) {
+  Widget _buildEvent(BuildContext context, {double width, Event event}) {
     String timeFrom = event.timeStartString();
     String timeTo = event.timeEndString();
+    TextStyle style = TextStyle(
+      color: Theme.of(context).textTheme.body1.color,
+    );
 
     return Container(
       margin: EdgeInsets.all(5),
@@ -48,9 +51,9 @@ class DayEvent extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text(event.lesson),
-                  Text(event.type),
-                  Text('$timeFrom - $timeTo'),
+                  Text(event.lesson, style: style),
+                  Text(event.type, style: style),
+                  Text(event.room, style: style),
                 ],
               ),
             ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nure_schedule/api/model/event.dart';
-import 'package:nure_schedule/api/model/group_events.dart';
+import 'package:nure_schedule/api/model/group.dart';
 import 'package:nure_schedule/model/time_range.dart';
 import 'package:nure_schedule/widgets/date_header.dart';
 import 'package:nure_schedule/widgets/day_event.dart';
@@ -13,12 +13,12 @@ class NureDayView extends StatelessWidget {
 
   NureDayView({
     @required this.day,
-    @required GroupEvents groupEvents,
+    @required Group group,
     this.onHeaderClick,
   }) {
     Map<int, List<Event>> eventsMap = {};
-    List<Event> events = List.from(groupEvents.getEvents(day));
-    List<ITimeRange> ranges = List.from(groupEvents.getNurePairsRanges());
+    List<Event> events = List.from(group.getEvents(day));
+    List<ITimeRange> ranges = List.from(group.getNurePairsRanges());
 
     ranges.sort((range, checkRange) => range.timeId.compareTo(checkRange.timeId));
     ranges.forEach((ITimeRange range) => eventsMap[range.timeId] = []);

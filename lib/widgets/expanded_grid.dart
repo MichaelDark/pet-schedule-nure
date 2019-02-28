@@ -18,13 +18,16 @@ class ExpandedGrid extends StatelessWidget {
       builder: (context, constraints) {
         double itemWidth = constraints.maxWidth;
         double itemHeight = constraints.maxHeight / itemCount;
+        double aspectRatio = itemWidth / itemHeight;
+
+        if (aspectRatio <= 0) return Container();
 
         return ScrollConfiguration(
           behavior: NoGlowScrollBehavior(),
           child: GridView.builder(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 1,
-              childAspectRatio: itemWidth / itemHeight,
+              childAspectRatio: aspectRatio,
             ),
             itemCount: itemCount,
             scrollDirection: Axis.vertical,

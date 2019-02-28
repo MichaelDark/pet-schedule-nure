@@ -16,4 +16,7 @@ bool correspondsTime(DateTime date, DateTime checkableDate) {
   return date.hour == checkableDate.hour && date.minute == checkableDate.minute;
 }
 
-String timeToString(DateTime time) => DateFormat('hh:mm').format(time);
+String timeToString(DateTime time) => DateFormat('Hm').format(time);
+
+String formatWeekDay(DateTime date) => DateFormat('EEEE').format(date);
+String formatDate(DateTime date) => DateFormat('dd.MM.yyyy').format(date);

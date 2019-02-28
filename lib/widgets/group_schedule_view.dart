@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nure_schedule/api/model/group_events.dart';
+import 'package:nure_schedule/api/model/group.dart';
 import 'package:nure_schedule/model/time_range.dart';
 import 'package:nure_schedule/widgets/date_header.dart';
 import 'package:nure_schedule/widgets/expanded_grid.dart';
@@ -8,17 +8,21 @@ import 'package:nure_schedule/widgets/schedule_controller.dart';
 import 'package:nure_schedule/widgets/schedule_view.dart';
 
 class GroupScheduleView extends StatelessWidget {
-  final GroupEvents groupEvents;
+  final Group group;
   final ScheduleController controller;
 
   GroupScheduleView({
-    @required this.groupEvents,
+    @required this.group,
     @required this.controller,
   });
 
   @override
   Widget build(BuildContext context) {
-    List<ITimeRange> nurePairs = groupEvents.getNurePairsRanges();
+    List<ITimeRange> nurePairs = group.getNurePairsRanges();
+    TextStyle style = TextStyle(
+      fontSize: 12,
+      color: Theme.of(context).textTheme.display1.color,
+    );
 
     return Row(
       children: <Widget>[
@@ -29,36 +33,38 @@ class GroupScheduleView extends StatelessWidget {
               DateHeader.leftTopCorner(),
               Divider(height: 5),
               Expanded(
-                child: ExpandedGrid(
-                  itemCount: nurePairs.length,
-                  itemBuilder: (BuildContext context, int index, _, __) {
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        Container(
-                          margin: EdgeInsets.symmetric(vertical: 5),
-                          child: Text(nurePairs[index].timeStartString(), style: Theme.of(context).textTheme.body2),
-                        ),
-                        Container(
-                          margin: EdgeInsets.symmetric(vertical: 5),
-                          child: Text(nurePairs[index].timeEndString(), style: Theme.of(context).textTheme.body2),
-                        ),
-                      ],
-                    );
-                  },
-                ),
+                child: nurePairs.isNotEmpty
+                    ? ExpandedGrid(
+                        itemCount: nurePairs.length,
+                        itemBuilder: (BuildContext context, int index, _, __) {
+                          return Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              Container(
+                                margin: EdgeInsets.symmetric(vertical: 5),
+                                child: Text(nurePairs[index].timeStartString(), style: style),
+                              ),
+                              Container(
+                                margin: EdgeInsets.symmetric(vertical: 5),
+                                child: Text(nurePairs[index].timeEndString(), style: style),
+                              ),
+                            ],
+                          );
+                        },
+                      )
+                    : Container(),
               ),
             ],
           ),
         ),
         Expanded(
           child: ScheduleView(
-            pagerController: controller,
+            controller: controller,
             builder: (DateTime day) {
               return NureDayView(
                 day: day,
-                groupEvents: groupEvents,
-                onHeaderClick: () => controller.jumpTo(context, day),
+                group: group,
+                onHeaderClick: () => controller.jumpTo(day),
               );
             },
           ),
