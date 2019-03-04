@@ -55,12 +55,11 @@ class Event extends ITimeRange {
 
 @GenBean()
 class EventBean extends Bean<Event> with _EventBean {
-  final GroupBean groupBean;
-
-  EventBean(Adapter adapter)
-      : groupBean = GroupBean(),
-        super(adapter);
+  EventBean(Adapter adapter) : super(adapter);
 
   @override
   String get tableName => 'events';
+
+  @override
+  GroupBean get groupBean => GroupBean(adapter);
 }

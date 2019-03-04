@@ -2,6 +2,7 @@ import 'package:csv/csv.dart';
 import 'package:nure_schedule/api/model/event.dart';
 import 'package:nure_schedule/api/model/group.dart';
 import 'package:nure_schedule/util/date_utils.dart';
+import 'dart:developer';
 
 class GroupEventsParser {
   static final GroupEventsParser _instance = GroupEventsParser._();
@@ -31,20 +32,19 @@ class GroupEventsParser {
         /// `11` - Описание
         /// `12` - Пометка
         List<String> rawEventDescriptions = rawEvent[0].split(';');
-        for (int i = 0; i < rawEventDescriptions.length; i += 2) {
+        for (int i = 0; i < rawEventDescriptions.length; i++) {
           List<String> eventDescription = rawEventDescriptions[i].trim().split(' ');
-
-          // print(eventDescription[isManyGroups ? 2 : 0]);
-          // print(eventDescription[isManyGroups ? 2 : 0]);
-          // print('\r\n');
           if (eventDescription.length > 1) {
+            DateTime startDate = parseDate(rawEvent[1], rawEvent[2]);
+            DateTime endDate = parseDate(rawEvent[3], rawEvent[4]);
+            // debugger(when: startDate.month == 3 && startDate.day == 6);
             Event parsedEvent = Event()
               ..groupId = targetGroup.id
               ..lesson = eventDescription[isManyGroups ? 2 : 0]
               ..type = eventDescription[isManyGroups ? 3 : 1]
               ..room = eventDescription[isManyGroups ? 4 : 2]
-              ..timeStart = parseDate(rawEvent[1], rawEvent[2])
-              ..timeEnd = parseDate(rawEvent[3], rawEvent[4])
+              ..timeStart = startDate
+              ..timeEnd = endDate
               ..raw = rawEventDescriptions[i];
             resultGroup.events.add(parsedEvent);
           }

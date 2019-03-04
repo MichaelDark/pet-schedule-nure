@@ -5,25 +5,33 @@ import 'package:nure_schedule/api/model/group.dart';
 import 'package:http/http.dart' as http;
 import 'package:nure_schedule/api/util/group_events_parser.dart';
 import 'package:nure_schedule/api/util/response_extractor.dart';
+import 'package:nure_schedule/main.dart';
 import 'package:nure_schedule/util/cp1251.dart';
 
 class CistApiClient {
   Future<Group> getGroupEvents({
     @required Group targetGroup,
-    @required DateTime dateStart,
-    @required DateTime dateEnd,
   }) async {
-    print('API CALL API CALL API CALL API CALL API CALL API CALL');
+    log('CistApiClient', 'getGroupEvents', 'start');
     CistUrlBuilder urlBuilder = CistUrlBuilder.csv(CistUrl.group);
     urlBuilder.addGroups([targetGroup]);
-    urlBuilder.addDateStart(dateStart);
-    urlBuilder.addDateEnd(dateEnd);
+
+    DateTime now = DateTime.now();
+    if (DateTime.now().month <= 6) {
+      urlBuilder.addDateStart(DateTime(now.year, 1, 1));
+      urlBuilder.addDateEnd(DateTime(now.year, 7, 1));
+    } else {
+      urlBuilder.addDateStart(DateTime(now.year, 7, 1));
+      urlBuilder.addDateEnd(DateTime(now.year, 12, 31));
+    }
 
     http.Response response = await http.get(urlBuilder.url);
-    print(urlBuilder.url);
+
+    log('CistApiClient', 'getGroupEvents', 'url ${urlBuilder.url}');
     String responseBody = decodeCp1251(response.bodyBytes);
 
     Group resultGroup = GroupEventsParser().parseCsv(targetGroup, responseBody);
+    log('CistApiClient', 'getGroupEvents', 'end');
     return resultGroup;
   }
 

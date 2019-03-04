@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nure_schedule/api/model/group.dart';
+import 'package:nure_schedule/main.dart';
 import 'package:nure_schedule/scoped_model/main_model.dart';
 import 'package:nure_schedule/widgets/states/data_state.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -15,7 +16,7 @@ class _GroupsPageState extends DataState<GroupsPage> with LoadDataHelper<GroupsP
 
   @override
   Widget build(BuildContext context) {
-    print('build Groups');
+    log('GroupsPage', 'build');
     loadData();
 
     return Scaffold(
@@ -25,7 +26,7 @@ class _GroupsPageState extends DataState<GroupsPage> with LoadDataHelper<GroupsP
         leading: IconButton(
           icon: Icon(Icons.home),
           onPressed: () {
-            Navigator.pushReplacementNamed(context, '/home');
+            Navigator.pop(context);
           },
         ),
       ),
@@ -36,11 +37,18 @@ class _GroupsPageState extends DataState<GroupsPage> with LoadDataHelper<GroupsP
               itemCount: loadedData.length,
               itemBuilder: (BuildContext context, int index) {
                 Group currentGroup = loadedData[index];
-                return GroupListTile(
-                  group: currentGroup,
+
+                return ListTile(
+                  title: Text(currentGroup.name),
+                  trailing: IconButton(
+                    icon: Icon(Icons.refresh),
+                    onPressed: () {
+                      ScopedModel.of<MainModel>(context).cacheGroupEvents(currentGroup);
+                    },
+                  ),
                   onTap: () {
                     ScopedModel.of<MainModel>(context).selectedGroup = currentGroup;
-                    Navigator.pushReplacementNamed(context, '/home');
+                    Navigator.of(context).pop<Group>(currentGroup);
                   },
                 );
               },
@@ -51,60 +59,6 @@ class _GroupsPageState extends DataState<GroupsPage> with LoadDataHelper<GroupsP
           }
           return Center(child: CircularProgressIndicator());
         },
-      ),
-    );
-  }
-}
-
-class GroupListTile extends StatefulWidget {
-  final Group group;
-  final void Function() onTap;
-
-  GroupListTile({this.group, this.onTap});
-
-  @override
-  State<StatefulWidget> createState() => _GroupListTileState();
-}
-
-class _GroupListTileState extends State<GroupListTile> {
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: widget.onTap,
-      child: Padding(
-        padding: EdgeInsets.all(20),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Expanded(
-              child: Text(
-                widget.group.name,
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.grey,
-                ),
-              ),
-            ),
-            FutureBuilder(
-              future: ScopedModel.of<MainModel>(context).isGroupSaved(widget.group),
-              builder: (context, AsyncSnapshot<bool> snapshot) {
-                if (snapshot.hasData && snapshot.data) {
-                  return Text(
-                    'Saved',
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: Colors.grey,
-                    ),
-                  );
-                }
-                if (snapshot.hasError) {
-                  return Container();
-                }
-                return CircularProgressIndicator();
-              },
-            ),
-          ],
-        ),
       ),
     );
   }

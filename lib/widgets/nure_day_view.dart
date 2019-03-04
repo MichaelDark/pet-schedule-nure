@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nure_schedule/api/model/event.dart';
 import 'package:nure_schedule/api/model/group.dart';
+import 'package:nure_schedule/main.dart';
 import 'package:nure_schedule/model/time_range.dart';
 import 'package:nure_schedule/widgets/date_header.dart';
 import 'package:nure_schedule/widgets/day_event.dart';
@@ -36,6 +37,7 @@ class NureDayView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    log('NureDayView', 'build');
     return Column(
       children: <Widget>[
         GestureDetector(

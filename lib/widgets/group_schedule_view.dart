@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nure_schedule/api/model/group.dart';
+import 'package:nure_schedule/main.dart';
 import 'package:nure_schedule/model/time_range.dart';
 import 'package:nure_schedule/widgets/date_header.dart';
 import 'package:nure_schedule/widgets/expanded_grid.dart';
@@ -18,13 +19,16 @@ class GroupScheduleView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Stopwatch watch = Stopwatch();
+    watch.start();
+
     List<ITimeRange> nurePairs = group.getNurePairsRanges();
     TextStyle style = TextStyle(
       fontSize: 12,
       color: Theme.of(context).textTheme.display1.color,
     );
 
-    return Row(
+    var row = Row(
       children: <Widget>[
         Container(
           width: headersSize,
@@ -71,5 +75,9 @@ class GroupScheduleView extends StatelessWidget {
         ),
       ],
     );
+
+    watch.stop();
+    log('GroupScheduleView', 'build', '${watch.elapsed}');
+    return row;
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nure_schedule/main.dart';
 import 'package:nure_schedule/widgets/schedule_controller.dart';
 
 typedef Widget DayBuilder(DateTime day);
@@ -23,7 +24,10 @@ class _ScheduleViewState extends State<ScheduleView> {
   }
 
   @override
-  Widget build(BuildContext context) => SafeArea(child: buildListView());
+  Widget build(BuildContext context) {
+    log('ScheduleView', 'build');
+    return SafeArea(child: buildListView());
+  }
 
   Widget buildListView() {
     controller.calculateInitialOffset();
@@ -35,7 +39,7 @@ class _ScheduleViewState extends State<ScheduleView> {
       itemExtent: dayWidth,
       scrollDirection: Axis.horizontal,
       itemBuilder: (context, daysFromMinDate) {
-        print(daysFromMinDate);
+        log('ScheduleView', 'buildListView', '$daysFromMinDate');
         DateTime day = controller.getDate(daysFromMinDate);
 
         return SizedBox(

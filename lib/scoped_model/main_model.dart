@@ -2,6 +2,8 @@ import 'package:jaguar_query_sqflite/jaguar_query_sqflite.dart';
 import 'package:nure_schedule/api/cist_api_client.dart';
 import 'package:nure_schedule/api/model/event.dart';
 import 'package:nure_schedule/api/model/group.dart';
+import 'package:nure_schedule/main.dart';
+import 'package:nure_schedule/storage.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 Group pzpiGroup = Group(id: 5721659, name: 'ПЗПІ-16-2');
@@ -9,30 +11,34 @@ Group pzpiGroup = Group(id: 5721659, name: 'ПЗПІ-16-2');
 class MainModel extends Model {
   static const Duration minInitTime = Duration(seconds: 1);
 
-  SqfliteAdapter _adapter;
-  EventBean _eventBean;
-  GroupBean _groupBean;
+  final SqfliteAdapter _adapter;
 
   String errorText;
-  Group selectedGroup;
+  Group _selectedGroup;
+  Group get selectedGroup => _selectedGroup;
+  set selectedGroup(Group group) {
+    _selectedGroup = group;
+    Storage().setLastGroupId(group.id);
+  }
 
-  MainModel(); //: selectedGroup = pzpiGroup;
+  SqfliteAdapter get adapter => _adapter;
+
+  MainModel() : _adapter = SqfliteAdapter('schedule_nure.db', version: 3);
 
   Future<void> initModel() async {
     Stopwatch watch = Stopwatch();
     watch.start();
 
-    _adapter = SqfliteAdapter('schedule_nure.db', version: 1);
     await _adapter.connect();
+    // await EventBean(_adapter).drop();
+    // await GroupBean(_adapter).drop();
+    await EventBean(_adapter).createTable(ifNotExists: true);
+    await GroupBean(_adapter).createTable(ifNotExists: true);
 
-    _eventBean = EventBean(_adapter);
-    await _eventBean.createTable(ifNotExists: true);
-
-    _groupBean = GroupBean(
-      adapter: _adapter,
-      eventBean: _eventBean,
-    );
-    await _groupBean.createTable(ifNotExists: true);
+    int lastGroupId = await Storage().getLastGroupId();
+    if (lastGroupId != null) {
+      _selectedGroup = await GroupBean(_adapter).find(lastGroupId);
+    }
 
     watch.stop();
     Duration elapsed = watch.elapsed;
@@ -45,11 +51,11 @@ class MainModel extends Model {
   bool get hasSelectedGroup => selectedGroup != null && selectedGroup.isNotEmpty();
 
   Future<Group> loadGroupEvents() async {
-    print('EVENTS LOAD START');
+    log('MainModel', 'loadGroupEvents', 'start');
 
-    Group group = await _groupBean.find(selectedGroup.id, preload: true, cascade: true);
+    Group group = await GroupBean(adapter).find(selectedGroup.id, preload: true, cascade: true) ?? selectedGroup;
 
-    print('EVENTS LOAD END');
+    log('MainModel', 'loadGroupEvents', 'end');
     return group;
   }
 
@@ -57,7 +63,7 @@ class MainModel extends Model {
 
   Future<bool> isGroupSaved(Group group) async {
     try {
-      Group localGroup = await _groupBean.find(group.id);
+      Group localGroup = await GroupBean(adapter).find(group.id);
       return localGroup != null;
     } catch (ignored) {
       return false;
@@ -65,18 +71,15 @@ class MainModel extends Model {
   }
 
   Future<void> cacheGroupEvents(Group targetGroup) async {
-    print('EVENTS CACHE START');
+    log('MainModel', 'cacheGroupEvents', 'start');
+
     try {
       Group resultGroup = await CistApiClient().getGroupEvents(
         targetGroup: targetGroup,
-        dateStart: DateTime(2019, 02, 01),
-        dateEnd: DateTime(2019, 07, 01),
       );
       selectedGroup = resultGroup;
-      if (await isGroupSaved(resultGroup)) {
-        await _groupBean.remove(targetGroup.id, true);
-      }
-      await _groupBean.insert(
+      await GroupBean(adapter).remove(selectedGroup.id, true);
+      await GroupBean(adapter).insert(
         resultGroup,
         cascade: true,
       );
@@ -84,7 +87,7 @@ class MainModel extends Model {
       errorText = exception;
     }
 
-    print('EVENTS CACHE END');
+    log('MainModel', 'cacheGroupEvents', 'end');
     notifyListeners();
   }
 

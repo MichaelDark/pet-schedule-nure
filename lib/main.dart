@@ -10,6 +10,10 @@ void main() => runApp(MyApp());
 
 String appName = 'ScheduleNure';
 
+log(String className, String method, [String message]) {
+  print('${DateTime.now()} [$className][${method ?? ''}] ${message ?? ''}');
+}
+
 class MyApp extends StatelessWidget {
   final MainModel model = MainModel();
   void forcePortrait() {

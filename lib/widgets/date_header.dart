@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:nure_schedule/scoped_model/main_model.dart';
+import 'package:nure_schedule/main.dart';
 import 'package:nure_schedule/util/date_utils.dart';
-import 'package:scoped_model/scoped_model.dart';
 
 const double headersSize = 40;
 
@@ -19,16 +17,12 @@ class DateHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    log('DateHeader', 'build');
     ThemeData theme = Theme.of(context);
     if (day == null) {
-      return ScopedModelDescendant<MainModel>(
-        builder: (BuildContext context, _, MainModel model) {
-          return SizedBox(
-            height: height,
-            width: width,
-            // child: Icon(model.colorBrightness == Brightness.dark ? Icons.brightness_5 : Icons.brightness_3),
-          );
-        },
+      return SizedBox(
+        height: height,
+        width: width,
       );
     }
 

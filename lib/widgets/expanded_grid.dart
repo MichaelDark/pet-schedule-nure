@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nure_schedule/main.dart';
 import 'package:nure_schedule/widgets/no_glow_scroll_behavior.dart';
 
 typedef Widget ExpandedGridItemBuilder(BuildContext context, int index, double itemWidth, double itemHeight);
@@ -14,6 +15,7 @@ class ExpandedGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    log('ExpandedGrid', 'build');
     return LayoutBuilder(
       builder: (context, constraints) {
         double itemWidth = constraints.maxWidth;

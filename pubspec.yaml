@@ -7,7 +7,7 @@ description:
 # Both the version and the builder number may be overridden in flutter
 # build by specifying --build-name and --build-number, respectively.
 # Read more about versioning at semver.org.
-version: 1.2.1+4
+version: 1.2.2+5
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
@@ -25,6 +25,7 @@ dependencies:
   jaguar_orm: ^2.2.4
   jaguar_query_sqflite: ^2.2.4
   scoped_model: any
+  shared_preferences: any
   
 
   # The following adds the Cupertino Icons font to your application.

@@ -43,10 +43,11 @@ class Group {
 
 @GenBean()
 class GroupBean extends Bean<Group> with _GroupBean {
-  final EventBean eventBean;
-
-  GroupBean({Adapter adapter, this.eventBean}) : super(adapter);
+  GroupBean(Adapter adapter) : super(adapter);
 
   @override
   String get tableName => 'groups';
+
+  @override
+  EventBean get eventBean => EventBean(adapter);
 }

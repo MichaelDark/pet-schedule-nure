@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nure_schedule/api/model/event.dart';
+import 'package:nure_schedule/main.dart';
 
 class DayEvent extends StatelessWidget {
   final List<Event> events;
@@ -8,6 +9,7 @@ class DayEvent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    log('DayEvent', 'build');
     return events.length == 1 ? _buildEvent(context, event: events.first) : _buildEventList();
   }
 
@@ -31,8 +33,6 @@ class DayEvent extends StatelessWidget {
   }
 
   Widget _buildEvent(BuildContext context, {double width, Event event}) {
-    String timeFrom = event.timeStartString();
-    String timeTo = event.timeEndString();
     TextStyle style = TextStyle(
       color: Theme.of(context).textTheme.body1.color,
     );
